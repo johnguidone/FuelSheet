@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pit Fuel Entry</title>
+  <style>
+    body { font-family: Arial; padding: 20px; }
+    input[type=number] { font-size: 36px; width: 100%; padding: 15px; margin-bottom: 10px; }
+    label { font-size: 28px; display: block; margin: 10px 0 5px; }
+    .radio-group { margin-bottom: 20px; }
+    .radio-group label { font-size: 32px; }
+    button { font-size: 36px; padding: 15px; width: 100%; background: #4CAF50; color: white; border: none; border-radius: 10px; }
+    button:active { background: #45a049; }
+  </style>
+</head>
+<body>
+
+<h1>Pit Fuel Entry</h1>
+
+<label for="can1_start">Can 1 Start Weight</label>
+<input type="number" id="can1_start" required>
+
+<label for="can1_end">Can 1 End Weight</label>
+<input type="number" id="can1_end" required>
+
+<label for="can2_start">Can 2 Start Weight</label>
+<input type="number" id="can2_start" required>
+
+<label for="can2_end">Can 2 End Weight</label>
+<input type="number" id="can2_end" required>
+
+<div class="radio-group">
+  <label>Fill Level</label>
+  <label><input type="radio" name="fill_level" value="Not Full" required> Not Full</label>
+  <label><input type="radio" name="fill_level" value="Barely Full"> Barely Full</label>
+  <label><input type="radio" name="fill_level" value="Packed"> Packed</label>
+</div>
+
+<button onclick="submitData()">Submit</button>
+
+<script>
+  const scriptURL = 'YOUR_WEB_APP_URL_HERE'; // replace with your Apps Script URL
+
+  function submitData() {
+    const can1_start = document.getElementById('can1_start').value;
+    const can1_end = document.getElementById('can1_end').value;
+    const can2_start = document.getElementById('can2_start').value;
+    const can2_end = document.getElementById('can2_end').value;
+    const fill_level = document.querySelector('input[name="fill_level"]:checked')?.value;
+
+    if(!can1_start || !can1_end || !can2_start || !can2_end || !fill_level){
+      alert("Please fill in all fields");
+      return;
+    }
+
+    fetch(scriptURL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({
+        can1_start, can1_end, can2_start, can2_end, fill_level
+      })
+    })
+    .then(response => response.text())
+    .then(data => {
+      alert("Entry submitted!");
+      document.getElementById('can1_start').value = '';
+      document.getElementById('can1_end').value = '';
+      document.getElementById('can2_start').value = '';
+      document.getElementById('can2_end').value = '';
+      document.querySelector('input[name="fill_level"]:checked').checked = false;
+    })
+    .catch(err => alert("Error: " + err));
+  }
+</script>
+
+</body>
+</html>
